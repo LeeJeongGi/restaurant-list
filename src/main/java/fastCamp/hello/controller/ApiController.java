@@ -1,9 +1,11 @@
 package fastCamp.hello.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import fastCamp.hello.dto.UserReq;
+import fastCamp.hello.dto.UserRes;
+import io.swagger.annotations.*;
+import org.springframework.web.bind.annotation.*;
 
+@Api(tags = {"API 정보를 제공하는 Controller"})
 @RestController
 @RequestMapping("/api")
 public class ApiController {
@@ -11,5 +13,24 @@ public class ApiController {
     @GetMapping("/hello")
     public String hello() {
         return "hello";
+    }
+
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "x", value = "x의 값", required = true, dataType = "int"),
+        @ApiImplicitParam(name = "y", value = "y의 값", required = true, dataType = "int")
+    })
+    @GetMapping("/plus/{x}")
+    public int plus(@PathVariable int x, @RequestParam int y) {
+        return x+y;
+    }
+    @ApiResponse(code = 502 , message = "사용자의 나이가 10살 이하일때")
+    @ApiOperation(value = "사용자의 이름과 나이를 return 하는 method")
+    @GetMapping("/user")
+    public UserRes user(UserReq userReq) {
+        return new UserRes(userReq.getName(), userReq.getAge());
+    }
+    @PostMapping("/user")
+    public UserRes userPost(@RequestBody UserReq userReq) {
+        return new UserRes(userReq.getName(), userReq.getAge());
     }
 }
